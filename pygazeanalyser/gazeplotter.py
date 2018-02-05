@@ -479,19 +479,16 @@ def draw_display(dispsize, imagefile=None):
 					if an imagefile was passed
 	"""
 
-    # construct screen (black background)
+    # construct empty screen
     screen = numpy.zeros((dispsize[1], dispsize[0], 3), dtype='uint8')
     # if an image location has been passed, draw the image
     if imagefile != None:
         # check if the path to the image exists
         if not os.path.isfile(imagefile):
             raise Exception(
-                "ERROR in draw_display: imagefile not found at '%s'" % imagefile)
+                "ERROR in draw_display: imagefile not found at " + str(imagefile))
         # load image
         img = image.imread(imagefile)
-        # flip image over the horizontal axis
-        # (do not do so on Windows, as the image appears to be loaded with
-        # the correct side up there; what's up with that? :/)
         if not os.name == 'nt':
             img = numpy.flipud(img)
         # width and height of the image
@@ -501,19 +498,21 @@ def draw_display(dispsize, imagefile=None):
         y = dispsize[1] / 2 - h / 2
         # draw the image on the screen
         screen[y:y + h, x:x + w, :] += img
+        del img
+
     # dots per inch
     dpi = 100.0
     # determine the figure size in inches
     figsize = (dispsize[0] / dpi, dispsize[1] / dpi)
     # create a figure
-    fig = pyplot.figure(figsize=figsize, dpi=dpi, frameon=False)
+    fig = pyplot.figure(figsize=figsize, dpi=int(dpi), frameon=False)
     ax = pyplot.Axes(fig, [0, 0, 1, 1])
     ax.set_axis_off()
     fig.add_axes(ax)
     # plot display
     ax.axis([0, dispsize[0], 0, dispsize[1]])
     ax.imshow(screen)  # , origin='upper')
-
+    del screen
     return fig, ax
 
 
