@@ -425,7 +425,7 @@ def draw_scanpath(fix, dispsize, imagefile, savefilename, alpha=0.5):
 
     fig, ax = draw_display(dispsize,
                            imagefile=imagefile)  # draw point with weights
-    ax.scatter(fix['x'], fix['y'], s=fix['dur'], c=COLS['green'][2],
+    ax.scatter(fix['x'], fix['y'], s=fix['dur'], c=COLS['chameleon'][2],
                marker='o', cmap='jet', alpha=alpha,
                edgecolors='none')
     # draw points and order
