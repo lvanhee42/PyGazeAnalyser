@@ -188,7 +188,7 @@ def make_heatmap(fix, dispsize, image_data):
             try:
                 heatmap[numpy.int(y):numpy.int(y + zoom_y),
                 numpy.int(x):numpy.int(
-                    x + zoom_x)] += gaus  # * fix['zoom'][i]
+                    x + zoom_x)] += gaus * fix['zoom'][i]
             except:
                 pass
     # resize heatmap
