@@ -188,7 +188,7 @@ def make_heatmap(fix, dispsize, image_data):
             try:
                 heatmap[numpy.int(y):numpy.int(y + zoom_y),
                 numpy.int(x):numpy.int(
-                    x + zoom_x)] += gaus * fix['zoom'][i]
+                    x + zoom_x)] += gaus
             except:
                 pass
     # resize heatmap
@@ -197,7 +197,7 @@ def make_heatmap(fix, dispsize, image_data):
 
 
 def save_heatmap(heatmap, dispsize, imagefile, savefilename, alpha=0.5,
-                 avg=None):
+                 avg=None, annotations=None):
     """saves a heatmap of the provided 2D heatmap array, optionally drawn over an
     image.
 
@@ -229,13 +229,19 @@ def save_heatmap(heatmap, dispsize, imagefile, savefilename, alpha=0.5,
     				heatmap
     """
     fig, ax = draw_display(dispsize, imagefile=imagefile)
+
+    if annotations is not None:
+        ax.plot(annotations['x'], annotations['y'], 'o', color=COLS['aluminium'][0],
+                markeredgecolor=COLS['aluminium'][5], markersize=2)
+        for i in range(len(annotations['x'])):
+            ax.text(annotations['x'][i], annotations['y'][i], str(i + 1), fontsize=18, ha='left', va='bottom')
+
     if len(heatmap[heatmap > 0]) > 0:
         if avg is None:
             lowbound = numpy.mean(heatmap[heatmap > 0])
         else:
             lowbound = avg
         heatmap[heatmap < lowbound] = numpy.NaN
-
         # draw heatmap on top of image
         ax.imshow(heatmap, cmap='jet', alpha=alpha)
 
@@ -547,9 +553,7 @@ def gaussian(x, sx, y=None, sy=None):
     # gaussian matrix
     for i in range(x):
         for j in range(y):
-            M[j, i] = numpy.exp(-1.0 * (
-            ((float(i) - xo) ** 2 / (2 * sx * sx)) + (
-            (float(j) - yo) ** 2 / (2 * sy * sy))))
+            M[j, i] = numpy.exp((-1.0/2.0)*((i - xo) ** 2 / sx ** 2 + (j - yo) ** 2 / sy ** 2)) # * (1.0/(2.0*numpy.pi*sx*sy))
 
     return M
 
